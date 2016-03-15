@@ -1,13 +1,15 @@
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
-import org.lwjgl.util.vector.Vector3f;
+
+import java.util.Scanner;
 
 /**
  * Created by john_bachman on 3/11/16.
  */
 public class Test {
 
-    private static int rotx = 0;
+    static boolean switchModel = false;
 
     public static void main(String[] args) {
         float[] vertices = {
@@ -22,28 +24,48 @@ public class Test {
 
         Window window = new Window(800, 600, "Game Testing");
         ModelLoader loadModel = new ModelLoader();
-        Model vertexModel = loadModel.createVertexModel(vertices, indices);
-        GL30.glBindVertexArray(vertexModel.getVaoID());
+        Sprite plane = new Sprite(loadModel.loadOBJ("res/cesnaTri.obj"));
+        Sprite book = new Sprite(loadModel.loadOBJ("res/booklow.obj"));
         Shader shader = new Shader("shaders/vertexShader.vshr", "shaders/fragmentShader.fshr");
-        int transMatrixID = GL20.glGetUniformLocation(shader.programID, "transMatrix");
+        Camera camera = new Camera(shader);
+        plane.translate(0,0,-10);
+        book.translate(0,0,-10);
         while(!Display.isCloseRequested()) {
-            rotx += 5;
-            GL11.glGetError();
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+            window.clean();
             shader.start();
-            shader.loadMatrix(transMatrixID, MatrixUtils.createTransformMatrix(new Vector3f(0,0,0), 0, rotx, 0, 1));
-            vertexModel.render();
-            shader.stopUsing();
+            //Rendering between the Shader Calls
+            if(switchModel) {
+                plane.render(shader, camera);
+                plane.rotate(0.5f, 0.5f, 0.5f);
+            } else {
+                book.render(shader, camera);
+                book.rotate(0.5f, 0.5f, 0.5f);
+            }
+            shader.stop();
             window.update();
             while(Keyboard.next()) {
-                if(Keyboard.getEventKey() == Keyboard.KEY_A) {
-                    rotx -= 10;
+                if(Keyboard.getEventKey() == Keyboard.KEY_W) {
+                    camera.move(0,0,-1);
+                } else if(Keyboard.getEventKey() == Keyboard.KEY_S) {
+                    camera.move(0,0,1);
+                } else if(Keyboard.getEventKey() == Keyboard.KEY_A) {
+                    camera.move(-1,0,0);
                 } else if(Keyboard.getEventKey() == Keyboard.KEY_D) {
-                    rotx += 10;
+                    camera.move(1,0,0);
+                } else if(Keyboard.isKeyDown(Keyboard.KEY_E)) {
+                    if (switchModel) {
+                        switchModel = false;
+                    } else {
+                        switchModel = true;
+                    }
                 }
             }
+
+            while(Mouse.next()) {
+                camera.rotate(Mouse.getDY() / 3, Mouse.getDX() / 3, 0);
+            }
         }
-        shader.stop();
+        shader.destroy();
         loadModel.clearPointers();
         Display.destroy();
     }

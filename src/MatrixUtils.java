@@ -1,5 +1,8 @@
+import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
+
+import java.nio.FloatBuffer;
 
 /**
  * Created by john_bachman on 3/14/16.
@@ -15,6 +18,13 @@ public class MatrixUtils {
         Matrix4f.rotate((float)Math.toRadians(rotz), new Vector3f(0,0,1), matrix, matrix);
         Matrix4f.scale(new Vector3f(scale, scale, scale), matrix, matrix);
         return matrix;
+    }
+
+    public static FloatBuffer MatrixToFloatBuffer(Matrix4f matrix) {
+        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(16);
+        matrix.store(floatBuffer);
+        floatBuffer.flip();
+        return floatBuffer;
     }
 
 }

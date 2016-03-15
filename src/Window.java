@@ -20,6 +20,7 @@ public class Window {
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
             Display.setTitle(title);
             Display.create(new PixelFormat(), contextAttribs);
+            //Initializing the OpenGL and Background Color.
             GL11.glViewport(0, 0, WIDTH, HEIGHT);
             GL11.glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
         } catch (LWJGLException e) {
@@ -27,9 +28,18 @@ public class Window {
         }
     }
 
+    public void clean() {
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+    }
+
     public void update() {
         Display.sync(60);
         Display.update();
+    }
+
+    public void setClearColor(float r, float b, float g, float a) {
+        GL11.glClearColor(r, b, g, a);
     }
 
 }

@@ -1,38 +1,57 @@
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.util.vector.Matrix3f;
+import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.nio.FloatBuffer;
-
 /**
- * Created by john_bachman on 3/14/16.
+ * Created by Jack on 3/15/2016.
  */
 public class Camera {
-    private Vector3f pos;
-    float pitch, yaw;
-    private Shader shader;
-    private Matrix4f transMatrix;
 
-    public Camera(int x, int y, int z, Shader shader) {
-        pos = new Vector3f(x, y, z);
-        this.shader = shader;
-        transMatrix = new Matrix4f();
+    private final int FOV = 60;
+    private final float nearPlane = 0.1f;
+    private final float farPlane = 1000f;
+    private Vector3f position = new Vector3f(0,0,0);
+    private float pitch;
+    private float yaw;
+    private float roll;
 
+    public Camera(Shader shader) {
+        shader.start();
+        shader.loadMatrix(shader.projectionMatrixID, createProjectionMatrix());
+        shader.stop();
     }
 
-    public void moveZ(float change) {
-        pos.z += change;
+    private Matrix4f createProjectionMatrix(){
+        float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
+        float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV/2f))) * aspectRatio);
+        float x_scale = y_scale / aspectRatio;
+        float frustum_length = farPlane - nearPlane;
+
+        Matrix4f projectionMatrix = new Matrix4f();
+        projectionMatrix.m00 = x_scale;
+        projectionMatrix.m11 = y_scale;
+        projectionMatrix.m22 = -((farPlane + nearPlane) / frustum_length);
+        projectionMatrix.m23 = -1;
+        projectionMatrix.m32 = -((2 * nearPlane * farPlane) / frustum_length);
+        projectionMatrix.m33 = 0;
+        return projectionMatrix;
     }
 
-    public void updateView() {
-        transMatrix.translate(pos);
-        FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(16);
-        transMatrix.store(floatBuffer);
-        floatBuffer.flip();
-        int id = GL20.glGetUniformLocation(shader.programID, "transMatrix");
-        GL20.glUniformMatrix4(id, false, floatBuffer);
+    public Matrix4f createViewMatrix() {
+       return MatrixUtils.createTransformMatrix(new Vector3f(-position.x, -position.y, -position.z), -pitch, yaw, roll, 1);
     }
+
+    public void move(float x, float y, float z) {
+        position.x += x;
+        position.y += y;
+        position.z += z;
+    }
+
+    public void rotate(float rx, float ry, float rz) {
+        pitch += rx;
+        yaw += ry;
+        roll += rz;
+    }
+
 }
