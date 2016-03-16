@@ -39,7 +39,7 @@ public class Camera {
     }
 
     public Matrix4f createViewMatrix() {
-       return MatrixUtils.createTransformMatrix(new Vector3f(-position.x, -position.y, -position.z), -pitch, yaw, roll, 1);
+       return MatrixUtils.createTransformMatrix(new Vector3f(-position.x, -position.y, -position.z), pitch, yaw, roll, 1);
     }
 
     public void move(float x, float y, float z) {

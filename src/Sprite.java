@@ -45,10 +45,18 @@ public class Sprite {
     public void scale(float scale) {
         scale = scale;
     }
+
+    public float getScale() {
+        return scale;
+    }
     
     public void render(Shader shader, Camera camera) {
         shader.loadMatrix(shader.viewMatrixID, camera.createViewMatrix());
         shader.loadMatrix(shader.transformMatrixID, MatrixUtils.createTransformMatrix(position, rx, ry, rz, scale));
         model.render();
+    }
+
+    public Model getModel() {
+        return model;
     }
 }

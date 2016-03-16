@@ -3,7 +3,7 @@
 in vec3 position;
 in vec2 uvs;
 
-out vec2 out_uvs;
+out vec3 color;
 
 uniform mat4 transMatrix;
 uniform mat4 projectMatrix;
@@ -11,5 +11,5 @@ uniform mat4 viewMatrix;
 
 void main(void) {
     gl_Position = projectMatrix * viewMatrix * transMatrix * vec4(position, 1.0);
-    out_uvs = uvs;
+    color = vec3(position.x + 0.5, position.y + 0.5, position.z + 0.5);
 }

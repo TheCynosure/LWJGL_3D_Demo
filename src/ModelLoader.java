@@ -7,7 +7,6 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -28,11 +27,13 @@ public class ModelLoader {
         vbos = new ArrayList<Integer>();
     }
 
-    public Model createVertexModel(float[] data, int[] indices) {
+    public Model createModel(float[] data, float[] textures, int[] indices, Texture texture) {
         int vaoID = createVAO();
-        storeVerticesInVBO(data);
+        storeDataInVBO(data, 0, 3);
+        storeDataInVBO(textures, 1, 2);
+        unbindVAO();
         int indicesID = storeIndicesInVBO(indices);
-        return new Model(vaoID, indicesID, indices.length);
+        return new Model(vaoID, indicesID, indices.length, texture);
     }
 
     private int createVAO() {
@@ -42,14 +43,13 @@ public class ModelLoader {
         return vaoID;
     }
 
-    private void storeVerticesInVBO(float[] data) {
+    private void storeDataInVBO(float[] data, int attribNum, int attribSize) {
         int vboID = GL15.glGenBuffers();
         vbos.add(vboID);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, toFloatBuffer(data), GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(0, 3, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(attribNum, attribSize, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-        unbindVAO();
     }
 
     private int storeIndicesInVBO(int[] data) {
@@ -88,86 +88,4 @@ public class ModelLoader {
         }
     }
 
-    //TODO: Make this not return a vector2f
-    private Vector2f findOccurences(String fileName) {
-        int vertexCount = 0;
-        int faceCount = 0;
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            String line;
-            while((line = reader.readLine()) != null) {
-                if(line.length() > 2) {
-                    if (line.substring(0, 2).equals("v ")) {
-                        vertexCount++;
-                    } else if (line.substring(0, 2).equals("f ")) {
-                        faceCount++;
-                    }
-                }
-            }
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        }
-        return new Vector2f(vertexCount * 3, faceCount * 3);
-    }
-
-    public Model loadOBJ(String fileName) {
-        System.out.println("Loading - " + fileName);
-        Vector2f occurences = findOccurences(fileName);
-        System.out.println("Vertices: " + (int)occurences.x);
-        System.out.println("Faces: " + (int)occurences.y);
-        float vertexs[] = new float[(int)occurences.x];
-        int indexes[] = new int[(int)occurences.y];
-
-        int vertexIndex = 0;
-        int faceIndex = 0;
-
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            String line;
-            while((line = reader.readLine()) != null) {
-                if(line.length() > 2) {
-                    if (line.substring(0, 2).equals("v ")) {
-                        Scanner scanner = new Scanner(line.substring(2));
-                        while(scanner.hasNext()) {
-                            vertexs[vertexIndex] = Float.parseFloat(scanner.next());
-                            vertexIndex++;
-                        }
-                    } else if (line.substring(0, 2).equals("f ")) {
-                        Scanner scanner = new Scanner(line.substring(2));
-                        int repeat = 0;
-                        while (scanner.hasNext()) {
-                            indexes[faceIndex] = findVertexFromFace(scanner.next());
-                            faceIndex++;
-                            repeat++;
-                            if(repeat >= 3) {
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        }
-
-        for(int i = 0; i < indexes.length; i++) {
-            indexes[i] = indexes[i] - 1;
-        }
-
-        System.out.println("Finished Loading - " +  fileName);
-        return createVertexModel(vertexs, indexes);
-    }
-
-    private int findVertexFromFace(String face) {
-        int vertex = 0;
-        for(int i = 0; i < face.length(); i++) {
-            if(face.substring(i, i+1).equals("/")) {
-                break;
-            } else {
-                vertex *= 10;
-                vertex += Integer.parseInt(face.substring(i, i+1));
-            }
-        }
-        return vertex;
-    }
 }
