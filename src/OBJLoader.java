@@ -122,9 +122,9 @@ public class OBJLoader {
         textureArray[currentVertexPointer * 2] = currentTex.x;
         textureArray[currentVertexPointer * 2 + 1] = 1 - currentTex.y;
 
-        Vector3f currentNorm = normals.get(Integer.parseInt(vertexData[2]) - 1);
-        normalsArray[currentVertexPointer * 3] = currentNorm.x;
-        normalsArray[currentVertexPointer * 3 + 1] = currentNorm.y;
-        normalsArray[currentVertexPointer * 3 + 2] = currentNorm.z;
+//        Vector3f currentNorm = normals.get(Integer.parseInt(vertexData[2]) - 1);
+//        normalsArray[currentVertexPointer * 3] = currentNorm.x;
+//        normalsArray[currentVertexPointer * 3 + 1] = currentNorm.y;
+//        normalsArray[currentVertexPointer * 3 + 2] = currentNorm.z;
     }
 }

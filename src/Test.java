@@ -15,11 +15,11 @@ public class Test {
     public static void main(String[] args) {
         Window window = new Window(800, 600, "Game Testing");
         OBJLoader loader = new OBJLoader();
-        Sprite book = new Sprite(loader.loadObjModel("res/booklow.obj", "res/stone.png", "PNG"));
-        Sprite book1 = new Sprite(loader.loadObjModel("res/booklow.obj", "res/Book_colorlowres.png", "PNG"));
-        Sprite book2 = new Sprite(loader.loadObjModel("res/booklow.obj", "res/Book_colorlowres.png", "PNG"));
+        Sprite book = new Sprite(loader.loadObjModel("res/Orange_Box.obj", "res/Orange_Texture.png", "PNG"));
+        Sprite book1 = new Sprite(loader.loadObjModel("res/Orange_Box.obj", "res/Orange_Texture.png", "PNG"));
+        Sprite book2 = new Sprite(loader.loadObjModel("res/Orange_Box.obj", "res/Orange_Texture.png", "PNG"));
         GL30.glBindVertexArray(book.getModel().getVaoID());
-        Shader shader = new Shader("shaders/vertexShaderTest.vshr", "shaders/fragmentShaderTest.fshr");
+        Shader shader = new Shader("shaders/vertexShader.vshr", "shaders/fragmentShader.fshr");
         GL30.glBindVertexArray(0);
         Camera camera = new Camera(shader);
         book.translate(-5, -5, -20);
