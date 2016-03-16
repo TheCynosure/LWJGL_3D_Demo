@@ -1,9 +1,11 @@
 #version 330
 
-in vec3 color;
+in vec2 out_uvs;
 
-out vec4 out_color;
+out vec3 out_color;
+
+uniform sampler2D texSamp;
 
 void main(void) {
-    out_color = vec4(color, 1.0);
+    out_color = texture(texSamp, out_uvs).rgb;
 }

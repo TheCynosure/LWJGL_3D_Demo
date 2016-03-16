@@ -1,6 +1,7 @@
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.Util;
 import org.lwjgl.util.vector.Matrix4f;
 
 import java.io.BufferedReader;
@@ -80,6 +81,7 @@ public class Shader {
     private void bindAttributes() {
         //Vertices will always come from VBO 0.
         bindAttribute(0, "position");
+        bindAttribute(1, "uvs");
     }
 
     private void bindAttribute(int attribute, String variableName) {
