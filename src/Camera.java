@@ -8,7 +8,7 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class Camera {
 
-    private final int FOV = 60;
+    private final int FOV = 70;
     private final float nearPlane = 0.1f;
     private final float farPlane = 1000f;
     private Vector3f position = new Vector3f(0,0,0);

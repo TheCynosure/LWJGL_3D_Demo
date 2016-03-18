@@ -19,6 +19,7 @@ public class Window {
             ContextAttribs contextAttribs = new ContextAttribs(3, 2).withForwardCompatible(true).withProfileCore(true);
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
             Display.setTitle(title);
+            Display.setSwapInterval(1);
             Display.create(new PixelFormat(), contextAttribs);
             //Initializing the OpenGL and Background Color.
             GL11.glViewport(0, 0, WIDTH, HEIGHT);
@@ -29,7 +30,6 @@ public class Window {
     }
 
     public void clean() {
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
     }
 

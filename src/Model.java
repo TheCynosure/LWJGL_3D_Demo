@@ -17,19 +17,16 @@ public class Model {
     }
 
     public void render() {
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         //Bind the VAO so we can access the Vertices
         GL30.glBindVertexArray(vaoID);
         //Bind the first attribute because that's were we put the vertices.
         GL20.glEnableVertexAttribArray(0);
-        //Texture Coordinates.
         GL20.glEnableVertexAttribArray(1);
         //Bind the Indices which are in a separate VBO
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesBufferID);
-        //Active the first texture slot to bind a texture to.
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        //Bind the texture the rendering process so it can be used.
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER ,GL11.GL_NEAREST);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getTextureID());
         //Draw the elements using the indices to access the correct vertices.
         GL11.glDrawElements(GL11.GL_TRIANGLES, vertexCount, GL11.GL_UNSIGNED_INT, 0);

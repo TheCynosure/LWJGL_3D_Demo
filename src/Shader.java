@@ -3,6 +3,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.Util;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -19,6 +21,8 @@ public class Shader {
     public int transformMatrixID;
     public int projectionMatrixID;
     public int viewMatrixID;
+    public int scaleID;
+    public int colorID;
 
     public Shader(String vertexShaderPath, String fragmentShaderPath) {
 
@@ -52,10 +56,20 @@ public class Shader {
         transformMatrixID = GL20.glGetUniformLocation(programID, "transMatrix");
         projectionMatrixID = GL20.glGetUniformLocation(programID, "projectMatrix");
         viewMatrixID = GL20.glGetUniformLocation(programID, "viewMatrix");
+        scaleID = GL20.glGetUniformLocation(programID, "scale");
+        colorID = GL20.glGetUniformLocation(programID, "color");
     }
 
     protected void loadMatrix(int matrixLocationID, Matrix4f matrix) {
         GL20.glUniformMatrix4(matrixLocationID, false, MatrixUtils.MatrixToFloatBuffer(matrix));
+    }
+
+    protected void loadFloat(int floatID, float data) {
+        GL20.glUniform1f(floatID, data);
+    }
+
+    protected void loadVector4f(int vector3fID, Vector4f data) {
+        GL20.glUniform4f(vector3fID, data.x, data.y, data.z, data.w);
     }
 
     public void start() {

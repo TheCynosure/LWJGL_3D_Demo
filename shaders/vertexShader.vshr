@@ -8,8 +8,13 @@ out vec2 out_uvs;
 uniform mat4 transMatrix;
 uniform mat4 projectMatrix;
 uniform mat4 viewMatrix;
+uniform float scale;
 
 void main(void) {
-    gl_Position = projectMatrix * viewMatrix * transMatrix * vec4(position, 1.0);
+    vec3 pos = position;
+    pos.x *= scale;
+    pos.y *= scale;
+    pos.z *= scale;
+    gl_Position = projectMatrix * viewMatrix * transMatrix * vec4(pos, 1.0);
     out_uvs = uvs;
 }
